@@ -1,13 +1,17 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Todo } from 'src/app/types/todo';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss']
+  styleUrls: ['./todo.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TodoComponent {
+export class TodoComponent implements OnChanges {
   @Output() delete = new EventEmitter();
+  @Output() toggle = new EventEmitter();
+  @Output() rename = new EventEmitter<string>();
+
   @Input() todo!: Todo;
 
   @ViewChild('titleField')
@@ -18,4 +22,29 @@ export class TodoComponent {
   }
 
   editing = false;
+  title = '';
+
+  // constructor() {}
+
+  ngOnChanges({ todo }: SimpleChanges): void {
+    console.log(todo.previousValue);
+
+    if (todo.currentValue.title !== todo.previousValue?.title) {
+      this.title = todo.currentValue.title;
+    }
+  }
+
+  edit() {
+    this.editing = true;
+    this.title = this.todo.title;
+  }
+
+  save() {
+    if (!this.editing) {
+      return;
+    }
+
+    this.editing = false;
+    this.rename.emit(this.title);
+  }
 }

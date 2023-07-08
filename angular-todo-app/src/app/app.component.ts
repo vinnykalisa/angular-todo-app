@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Todo } from './types/todo';
 
-const todos = [
+const todosFromServer = [
   {
     "id": 1,
     "title": "delectus aut autem",
@@ -31,10 +31,26 @@ const todos = [
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
-  todos = todos;
+export class AppComponent implements OnInit {
+_todos: Todo[] = [];
+activeTodos: Todo[] = [];
+
+get todos() {
+  return this._todos;
+}
+
+set todos(todos: Todo[]) {
+  if (todos === this._todos) {
+    return;
+  }
+
+  this._todos = todos;
+  this.activeTodos = this._todos.filter(todo => !todo.completed);
+}
+
   todoForm = new FormGroup({
     title: new FormControl('', {
       nonNullable: true,
@@ -45,30 +61,45 @@ export class AppComponent {
     }),
   });
 
-get title() {
-  return this.todoForm.get('title') as FormControl;
-}
-
-  handleTodoToggle(event: Event, todo: Todo) {
-    todo.completed = (event.target as HTMLInputElement).checked;
+  ngOnInit(): void {
+    this.todos = todosFromServer;
   }
 
-  get activeTodos() {
-    return this.todos.filter(todo => !todo.completed);
+  trackById(i: number, todo: Todo) {
+    return todo.id;
   }
 
-  addTodo() {
-    if (this.todoForm.invalid) {
-      return;
-    }
-
+  addTodo(newTitle: string) {
     const newTodo: Todo = {
       id: Date.now(),
-      title: this.title.value,
+      title: newTitle,
       completed: false,
     };
 
-    this.todos.push(newTodo);
-    this.todoForm.reset();
+    this.todos = [...this.todos, newTodo];
+  }
+
+  toggleTodo(todoId: number) {
+    this.todos = this.todos.map(todo => {
+      if (todo.id !== todoId) {
+        return todo;
+      }
+
+      return { ...todo, completed: !todo.completed };
+    });
+  }
+
+  renameTodo(todoId: number, title: string) {
+    this.todos.map(todo => {
+      if (todo.id === todoId) {
+        return todo;
+      }
+
+      return { ...todo, title };
+    });
+  }
+
+  deleteTodo(todoId: number) {
+    this.todos = this.todos.filter(todo => todo.id !== todoId);
   }
 }
