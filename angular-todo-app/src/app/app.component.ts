@@ -1,38 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Todo } from './types/todo';
-
-const todosFromServer = [
-  {
-    "id": 1,
-    "title": "delectus aut autem",
-    "completed": false,
-  },
-
-  {
-    "id": 2,
-    "title": "quis ut nam facilis et officia qui",
-    "completed": false,
-  },
-
-  {
-    "id": 3,
-    "title": "fugiat veniam minus",
-    "completed": false,
-  },
-
-  {
-    "id": 4,
-    "title": "et porro tempora",
-    "completed": true,
-  }
-];
+import { TodosService } from './services/todos.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
 _todos: Todo[] = [];
@@ -61,9 +35,16 @@ set todos(todos: Todo[]) {
     }),
   });
 
+  constructor(
+    private todosService: TodosService,
+  ) {}
+
   ngOnInit(): void {
-    this.todos = todosFromServer;
-  }
+    this.todosService.getTodos()
+      .subscribe((todos: Todo[]) => {
+        this.todos = todos;
+      })
+    }
 
   trackById(i: number, todo: Todo) {
     return todo.id;
