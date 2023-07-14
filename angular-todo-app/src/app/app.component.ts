@@ -40,47 +40,38 @@ set todos(todos: Todo[]) {
   ) {}
 
   ngOnInit(): void {
-    this.todosService.getTodos()
-      .subscribe((todos: Todo[]) => {
-        this.todos = todos;
-      })
-    }
+    this.todosService.todos$
+    .subscribe((todos) => {
+      this.todos = todos;
+    });
+  }
 
   trackById(i: number, todo: Todo) {
     return todo.id;
   }
 
   addTodo(newTitle: string) {
-    const newTodo: Todo = {
-      id: Date.now(),
-      title: newTitle,
-      completed: false,
-    };
+    this.todosService.createTodo(newTitle)
+      .subscribe();
+    }
 
-    this.todos = [...this.todos, newTodo];
+  toggleTodo(todo: Todo) {
+    this.todosService.updateTodo({
+      ...todo,
+      completed: !todo.completed,
+    })
+    .subscribe()
   }
 
-  toggleTodo(todoId: number) {
-    this.todos = this.todos.map(todo => {
-      if (todo.id !== todoId) {
-        return todo;
-      }
-
-      return { ...todo, completed: !todo.completed };
-    });
+  renameTodo(todo: Todo, title: string) {
+    this.todosService.updateTodo({
+      ...todo,
+      title })
+    .subscribe();
   }
 
-  renameTodo(todoId: number, title: string) {
-    this.todos.map(todo => {
-      if (todo.id === todoId) {
-        return todo;
-      }
-
-      return { ...todo, title };
-    });
-  }
-
-  deleteTodo(todoId: number) {
-    this.todos = this.todos.filter(todo => todo.id !== todoId);
+  deleteTodo(todo: Todo) {
+    this.todosService.deleteTodo(todo)
+      .subscribe();
   }
 }
