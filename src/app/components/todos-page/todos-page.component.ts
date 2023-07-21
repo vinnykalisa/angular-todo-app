@@ -81,14 +81,19 @@ export class TodosPageComponent implements OnInit {
     })
   }
 
-  toggleAllTodos(completed: boolean) {
-    this.todosService.todos$.pipe(take(1)).subscribe((todos) => {
-      todos.forEach((todo) => {
-        this.todosService.updateTodo({
-          ...todo,
-          completed: completed,
-        }).subscribe({
-          error: () => this.messageService.showMessage('Unable to toggle todo'),
+  toggleAllTodos() {
+    this.activeTodos$
+    .pipe(take(1))
+    .subscribe((activeTodos) => {
+      const allCompleted = activeTodos.length === 0;
+      this.todosService.todos$.pipe(take(1)).subscribe((todos) => {
+        todos.forEach((todo) => {
+          this.todosService.updateTodo({
+            ...todo,
+            completed: !allCompleted,
+          }).subscribe({
+            error: () => this.messageService.showMessage('Unable to toggle todo'),
+          });
         });
       });
     });
