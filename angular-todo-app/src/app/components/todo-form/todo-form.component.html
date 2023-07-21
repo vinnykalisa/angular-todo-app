@@ -1,0 +1,9 @@
+<form (ngSubmit)="handleFormSubmit()" [formGroup]="todoForm">
+  <input
+    type="text"
+    class="todoapp__new-todo"
+    [style.background-color]="title.errors && title.dirty ? '#f88' : ''"
+    formControlName="title"
+    placeholder="What needs to be done?"
+  />
+</form>

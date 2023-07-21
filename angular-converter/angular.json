@@ -3,12 +3,11 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-todo-app": {
+    "angular-converter": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss",
-          "skipTests": true
+          "style": "scss"
         }
       },
       "root": "",
@@ -18,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-todo-app",
+            "outputPath": "dist/angular-converter",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -31,9 +30,7 @@
               "src/assets"
             ],
             "styles": [
-              "bulma/css/bulma.css",
-              "@fortawesome/fontawesome-free/css/all.css",
-              "src/styles/index.scss"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -68,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-todo-app:build:production"
+              "browserTarget": "angular-converter:build:production"
             },
             "development": {
-              "browserTarget": "angular-todo-app:build:development"
+              "browserTarget": "angular-converter:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-todo-app:build"
+            "browserTarget": "angular-converter:build"
           }
         },
         "test": {
@@ -117,7 +114,7 @@
     }
   },
   "cli": {
-    "analytics": "bdca20c5-e80d-4ccc-946d-369b2504b88d",
+    "analytics": "3316958b-a595-4bc8-bcd8-2630cd9717b0",
     "schematicCollections": [
       "@angular-eslint/schematics"
     ]
